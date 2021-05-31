@@ -56,17 +56,110 @@
   </section>
 
   <script>
+    class NullNumError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "Null Number";
+      }
+    }
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        if(firstNum === '' || secondNum === '') {
+          throw new NullNumError("Must enter 2 numbers for calculation.");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }
+      catch (Error) {
+        console.error("Error in computation");
+        alert(Error.name);
+      }
+      finally {
+        console.log("done");
+      }
     });
+
+    window.onerror = function(message, source, lineno, colno, error) {
+      console.log("Error!");
+      TrackJS.track("Test");
+    }
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+    errorBtns[0].addEventListener('click', () => {
+      let output = document.querySelector('output').innerHTML;
+      console.log("Result:" + output);
+    });
+    errorBtns[1].addEventListener('click', () => {
+      console.log("Wrong. there's an error");
+    });
+    errorBtns[2].addEventListener('click', () => {
+      console.dir(document.head);
+    });
+    errorBtns[3].addEventListener('click', () => {
+      console.dirxml(document);
+    });
+    errorBtns[4].addEventListener('click', () => {
+      let output = document.querySelector('output').innerHTML;
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      let operator = document.querySelector('#operator').value;
+      const label = 'calculation:';
+      console.group(label);
+      console.info(firstNum);
+      console.info(operator);
+      console.info(secondNum);
+      console.info("=" + output);
+    });
+    errorBtns[5].addEventListener('click', () => {
+      const label = 'calculation:';
+      console.groupEnd(label);
+    });
+    errorBtns[6].addEventListener('click', () => {
+      console.table([
+        {
+          user: "stacy",
+          age: "5",
+        },
+        {
+          user: "tom",
+          age: "30",
+        },
+        {
+          user: "clara",
+          age: "19",
+        }
+      ])
+    });
+    errorBtns[7].addEventListener('click', () => {
+      console.time("timer");
+    });
+    errorBtns[8].addEventListener('click', () => {
+      console.timeEnd("timer");
+    });
+    errorBtns[9].addEventListener('click', () => {
+      const first = () => { second(); };
+      const second = () => { third(); };
+      const third = () => { fourth(); };
+      const fourth = () => { console.trace(); };
+      first();
+    });
+    errorBtns[10].addEventListener('click', () => {
+      throw new ReferenceError("You triggered a global error");
+    });
   </script>
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "be0126285d3347dd80a41e0467463610"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                          
 </body>
 </html>
